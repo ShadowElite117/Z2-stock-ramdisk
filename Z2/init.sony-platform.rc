@@ -61,7 +61,7 @@ on init
     
 
     #Configure Zram.
-    write /proc/sys/vm/swappiness 100
+    write /proc/sys/vm/swappiness 60
 
 on fs
     # SONY: Fota must be started directly after partitions are mounted and
