@@ -764,3 +764,11 @@ service logcatd /system/bin/logcat -b all -v threadtime -v usec -v printable -D 
     user logd
     group log
     writepid /dev/cpuset/system-background/tasks
+
+# Execute files in /system/etc/init.d before booting
+service run-parts /system/bin/sh -c "sleep 2; for i in /system/etc/init.d/*; do if [ ! -d $i ] && [ -x $i ]; then . $i > /dev/kmsg 2>&1; fi; done;"
+    class late_start
+    user root
+    group root
+    seclabel u:r:init:s0
+    oneshot
