@@ -4,6 +4,10 @@
 #
 import init.sony-platform.rc
 
+on fs
+    # start hvdcp to enable quick charge 2.0 in power off charge
+    start hvdcp
+
 on post-fs
     # Touch
     mkdir /dev/socket/tfsw 0770 system system

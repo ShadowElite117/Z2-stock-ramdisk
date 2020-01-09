@@ -53,6 +53,9 @@ on early-boot
     exec u:r:qti_init_shell:s0 -- /init.qcom.early_boot.sh
 
 on boot
+# Quick Charge 2.0 daemon
+    setprop persist.usb.hvdcp.detect "true"
+
 #    chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
@@ -791,6 +794,7 @@ on ffbm
 service hvdcp /system/bin/hvdcp
     class core
     user root
+	group root
     disabled
 
 on property:persist.usb.hvdcp.detect=true
