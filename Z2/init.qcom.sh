@@ -17,7 +17,7 @@
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NON-INFRINGEMENT ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# NON-INFRINGEMENT ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 # CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 # EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 # PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -25,13 +25,12 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
 
 target=`getprop ro.board.platform`
 if [ -f /sys/devices/soc0/soc_id ]; then
-    platformid=`cat /sys/devices/soc0/soc_id`
+	platformid=`cat /sys/devices/soc0/soc_id`
 else
-    platformid=`cat /sys/devices/system/soc/soc0/id`
+	platformid=`cat /sys/devices/system/soc/soc0/id`
 fi
 
 start_battery_monitor()
@@ -69,83 +68,92 @@ start_battery_monitor()
 #}
 
 baseband=`getprop ro.baseband`
-#
+
 # Suppress default route installation during RA for IPV6; user space will take
 # care of this
 # exception default ifc
 for file in /proc/sys/net/ipv6/conf/*
 do
-  echo 0 > $file/accept_ra_defrtr
+	echo 0 > $file/accept_ra_defrtr
 done
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra_defrtr
 
 case "$baseband" in
-        "svlte2a")
-        start bridgemgrd
-        ;;
+	"svlte2a")
+		start bridgemgrd
+	;;
 esac
 
-
 case "$target" in
-    "msm7630_surf" | "msm7630_1x" | "msm7630_fusion")
-        if [ -f /sys/devices/soc0/hw_platform ]; then
-            value=`cat /sys/devices/soc0/hw_platform`
-        else
-            value=`cat /sys/devices/system/soc/soc0/hw_platform`
-        fi
-#        case "$value" in
-#            "Fluid")
-#             start profiler_daemon;;
-#        esac
-        ;;
-    "msm8660" )
-        if [ -f /sys/devices/soc0/hw_platform ]; then
-            platformvalue=`cat /sys/devices/soc0/hw_platform`
-        else
-            platformvalue=`cat /sys/devices/system/soc/soc0/hw_platform`
-        fi
-#        case "$platformvalue" in
-#            "Fluid")
-#                start profiler_daemon;;
-#        esac
-        ;;
-    "msm8960")
-        case "$baseband" in
-            "msm")
-                start_battery_monitor;;
-        esac
+	"msm7630_surf" | "msm7630_1x" | "msm7630_fusion")
+		if [ -f /sys/devices/soc0/hw_platform ]; then
+			value=`cat /sys/devices/soc0/hw_platform`
+		else
+			value=`cat /sys/devices/system/soc/soc0/hw_platform`
+		fi
 
-        if [ -f /sys/devices/soc0/hw_platform ]; then
-            platformvalue=`cat /sys/devices/soc0/hw_platform`
-        else
-            platformvalue=`cat /sys/devices/system/soc/soc0/hw_platform`
-        fi
-#        case "$platformvalue" in
-#             "Fluid")
-#                 start profiler_daemon;;
-#             "Liquid")
-#                 start profiler_daemon;;
-#        esac
-        ;;
-    "msm8974")
-        platformvalue=`cat /sys/devices/soc0/hw_platform`
-#        case "$platformvalue" in
-#             "Fluid")
-#                 start profiler_daemon;;
-#             "Liquid")
-#                 start profiler_daemon;;
-#        esac
-        case "$baseband" in
-            "msm")
-                start_battery_monitor
-                ;;
-        esac
-#        start_charger_monitor
-        ;;
-    "msm8226")
-        start_charger_monitor
-        ;;
-    "msm8610")
-        start_charger_monitor
-        ;;
+#		case "$value" in
+#			"Fluid")
+#				start profiler_daemon
+#			;;
+#		esac
+	;;
+	"msm8660" )
+		if [ -f /sys/devices/soc0/hw_platform ]; then
+			platformvalue=`cat /sys/devices/soc0/hw_platform`
+		else
+			platformvalue=`cat /sys/devices/system/soc/soc0/hw_platform`
+		fi
+
+#		case "$platformvalue" in
+#			"Fluid")
+#				start profiler_daemon
+#			;;
+#		esac
+	;;
+	"msm8960")
+		case "$baseband" in
+			"msm")
+				start_battery_monitor
+			;;
+		esac
+
+		if [ -f /sys/devices/soc0/hw_platform ]; then
+			platformvalue=`cat /sys/devices/soc0/hw_platform`
+		else
+			platformvalue=`cat /sys/devices/system/soc/soc0/hw_platform`
+		fi
+
+#		case "$platformvalue" in
+#			"Fluid")
+#				start profiler_daemon
+#			;;
+#			"Liquid")
+#				start profiler_daemon
+#			;;
+#		esac
+	;;
+	"msm8974")
+		platformvalue=`cat /sys/devices/soc0/hw_platform`
+#		case "$platformvalue" in
+#			"Fluid")
+#				start profiler_daemon
+#			;;
+#			"Liquid")
+#				start profiler_daemon
+#			;;
+#		esac
+		case "$baseband" in
+			"msm")
+				start_battery_monitor
+			;;
+		esac
+#		start_charger_monitor
+	;;
+	"msm8226")
+		start_charger_monitor
+	;;
+	"msm8610")
+		start_charger_monitor
+	;;
 esac
