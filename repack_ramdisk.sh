@@ -3,6 +3,26 @@
 # Rewritten for my needs.
 # ShadowElite@XDA Developers <lefelite@gmail.com>
 
+menu()
+{
+	clear
+
+	echo "***************************************"
+	echo "*    Repack ramdisk utility for Z2    *"
+	echo "* by ShadowElite from XDA developers. *"
+	echo "***************************************"
+	echo
+	echo "Press 1 to compress Z2 clean ramdisk."
+	echo "Press 2 to compress Luis ramdisk."		# Ramdisk for my device
+	echo "Press 3 to compress JP ramdisk."			# Ramdisk for my other Z2
+	echo "Press 4 to compress Papa ramdisk."		# Ramdisk for my father's Z2
+	echo "Press 5 to compress DRM fix ramdisk."		# DRM fix ramdisk
+	echo -e "Press q to exit.\n"
+
+	read -n 1 -p "Make your selection: " menuinput
+	echo -e "\n"
+}
+
 # I created this function to ensure that the correct permissions are
 # given before a ramdisk is compressed, and this avoid that the device
 # doesn't boot because exist a file or files with wrong permissions.
@@ -73,26 +93,6 @@ set_permissions()
 	echo "Deleting EMPTY_DIRECTORY files..."
 	find . -name EMPTY* -exec rm -f {} \;
 	echo "Done!"
-}
-
-menu()
-{
-	clear
-
-	echo "#######################################"
-	echo "#    Repack ramdisk utility for Z2    #"
-	echo "# by ShadowElite from XDA developers. #"
-	echo "#######################################"
-	echo
-	echo "Press 1 to compress Z2 clean ramdisk."
-	echo "Press 2 to compress Luis ramdisk."		# Ramdisk for my device
-	echo "Press 3 to compress JP ramdisk."			# Ramdisk for my other Z2
-	echo "Press 4 to compress Papa ramdisk."		# Ramdisk for my father's Z2
-	echo "Press 5 to compress DRM fix ramdisk."		# DRM fix ramdisk
-	echo -e "Press q to exit.\n"
-
-	read -n 1 -p "Make your selection: " menuinput
-	echo -e "\n"
 }
 
 menu_options()
