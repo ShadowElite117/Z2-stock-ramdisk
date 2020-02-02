@@ -3,26 +3,14 @@
 # Rewritten for my needs.
 # ShadowElite@XDA Developers <lefelite@gmail.com>
 
-menu()
-{
-	echo -e "Repack ramdisk utility for Z2 by ShadowElite from XDA developers \n"
-
-	echo "1) Compress Z2 clean ramdisk."
-	echo "2) Compress Luis ramdisk."		# Ramdisk for my device
-	echo "3) Compress JP ramdisk."			# Ramdisk for my other Z2
-	echo "4) Compress Papa ramdisk."		# Ramdisk for my father's Z2
-	echo "5) Compress DRM fix ramdisk."		# DRM fix ramdisk
-	echo -e "6) Exit \n"
-
-	echo "Choose an option: "
-}
-
 # I created this function to ensure that the correct permissions are
 # given before a ramdisk is compressed, and this avoid that the device
 # doesn't boot because exist a file or files with wrong permissions.
 set_permissions()
 {
 	echo "Setting correct permissions"
+
+	cd tmp
 
 	chmod 644 crashtag
 	chmod 755 data
@@ -82,24 +70,84 @@ set_permissions()
 		chmod 644 vendor/lib/libdrmfix.so
 	fi
 
-	echo "Deleting EMTYP_DIRECTORY files..."
+	echo "Deleting EMPTY_DIRECTORY files..."
 	find . -name EMPTY* -exec rm -f {} \;
 	echo "Done!"
+}
+
+menu()
+{
+	clear
+
+	echo "#######################################"
+	echo "#    Repack ramdisk utility for Z2    #"
+	echo "# by ShadowElite from XDA developers. #"
+	echo "#######################################"
+	echo
+	echo "Press 1 to compress Z2 clean ramdisk."
+	echo "Press 2 to compress Luis ramdisk."		# Ramdisk for my device
+	echo "Press 3 to compress JP ramdisk."			# Ramdisk for my other Z2
+	echo "Press 4 to compress Papa ramdisk."		# Ramdisk for my father's Z2
+	echo "Press 5 to compress DRM fix ramdisk."		# DRM fix ramdisk
+	echo -e "Press q to exit.\n"
+
+	read -n 1 -p "Make your selection: " menuinput
+	echo -e "\n"
+}
+
+menu_options()
+{
+	if [ "$menuinput" = "1" ]; then
+		DRM=0
+		TA=0
+		cp -R Z2/* tmp
+		set_permissions
+		find . | cpio --owner root:root -o -H newc | gzip > ../Z2.cpio.gz
+	elif [ "$menuinput" = "2" ]; then
+		DRM=0
+		TA=1
+		cp -R Luis/* tmp
+		set_permissions
+		find . | cpio --owner root:root -o -H newc | gzip > ../Z2_L.cpio.gz
+	elif [ "$menuinput" = "3" ]; then
+		DRM=0
+		TA=1
+		cp -R JP/* tmp
+		set_permissions
+		find . | cpio --owner root:root -o -H newc | gzip > ../Z2_JP.cpio.gz
+	elif [ "$menuinput" = "4" ]; then
+		DRM=0
+		TA=1
+		cp -R Papa/* tmp
+		set_permissions
+		find . | cpio --owner root:root -o -H newc | gzip > ../Z2_P.cpio.gz
+	elif [ "$menuinput" = "5" ]; then
+		DRM=1
+		TA=0
+		cp -R DRM/* tmp
+		set_permissions
+		find . | cpio --owner root:root -o -H newc | gzip > ../Z2_DRM.cpio.gz
+	elif [ "$menuinput" = "Q" ] || [ "$menuinput" = "q" ]; then
+		break
+	else
+		continue
+	fi
 }
 
 question()
 {
 	echo
-	echo "Do you want to continue?? (Y/N):"
-	read b
-	if [ "$b" == "Y" ] || [ "$b" == "y" ]; then
-		clear
+	read -n 1 -p "Do you want to continue?? (Y/N): " answer
+	if [ "$answer" == "Y" ] || [ "$answer" == "y" ]; then
 		continue
-	elif [ "$b" == "N" ] || [ "$b" == "n" ]; then
+	elif [ "$answer" == "N" ] || [ "$answer" == "n" ]; then
+		echo
 		break
-	fi
+	else
+		clear
 
-	if ! [ "$b" == "Y" ] || ! [ "$b" == "y" ]; then
+		echo "You have entered an invalid answer!"
+		echo "Please try again!"
 		question
 	fi
 }
@@ -107,71 +155,14 @@ question()
 while true; do
 	menu
 
-	while true; do
-		read n
-		if ! [[ "$n" =~ ^[1-6]+$ ]]; then
-			clear
-			echo -e "That is not a valid choice, try again.\n"
-			menu
-		else
-			break
-		fi
-	done
+	# This verifies if the tmp folder exists and deletes it.
+	if [ -e tmp ]; then
+		rm -R tmp
+	fi
+	# Now this creates the temporary folder.
+	mkdir tmp
 
-	case $n in
-		1)
-			DRM=0
-			TA=0
-			mkdir tmp
-			cp -R Z2/* tmp
-			cd tmp
-			set_permissions
-			find . | cpio --owner root:root -o -H newc | gzip > ../Z2.cpio.gz
-		;;
-
-		2)
-			DRM=0
-			TA=1
-			mkdir tmp
-			cp -R Luis/* tmp
-			cd tmp
-			set_permissions
-			find . | cpio --owner root:root -o -H newc | gzip > ../Z2_L.cpio.gz
-		;;
-
-		3)
-			DRM=0
-			TA=1
-			mkdir tmp
-			cp -R JP/* tmp
-			cd tmp
-			set_permissions
-			find . | cpio --owner root:root -o -H newc | gzip > ../Z2_JP.cpio.gz
-		;;
-
-		4)
-			DRM=0
-			TA=1
-			cp -R Papa/* tmp
-			cd Papa
-			set_permissions
-			find . | cpio --owner root:root -o -H newc | gzip > ../Z2_P.cpio.gz
-		;;
-
-		5)
-			DRM=1
-			TA=0
-			mkdir tmp
-			cp -R DRM/* tmp
-			cd tmp
-			set_permissions
-			find . | cpio --owner root:root -o -H newc | gzip > ../Z2_DRM.cpio.gz
-		;;
-
-		6)
-			break
-		;;
-	esac
+	menu_options
 
 	cd ..
 	rm -R tmp
